@@ -1,0 +1,73 @@
+---
+import { routes, type Lang, type PageKey } from '../i18n/strings';
+
+interface Props {
+  lang: Lang;
+  page: PageKey;
+}
+
+const { lang, page } = Astro.props;
+const options: { lang: Lang; label: string; url: string }[] = [
+  { lang: 'en', label: 'English', url: routes[page].en },
+  { lang: 'fr', label: 'Français', url: routes[page].fr },
+];
+---
+
+<label class="lang-picker">
+  <span class="visually-hidden">{lang === 'fr' ? 'Langue' : 'Language'}</span>
+  <select class="lang-select" data-lang-select>
+    {options.map((o) => (
+      <option value={o.url} lang={o.lang} selected={o.lang === lang}>{o.label}</option>
+    ))}
+  </select>
+</label>
+
+<script>
+  // Changing the dropdown opens the same page in the other language.
+  // Delegated on document so it keeps working after page transitions.
+  document.addEventListener('change', (event) => {
+    const target = event.target as HTMLElement | null;
+    if (target instanceof HTMLSelectElement && target.matches('[data-lang-select]')) {
+      window.location.href = target.value;
+    }
+  });
+</script>
+
+<style>
+  .lang-picker {
+    position: relative;
+    display: inline-block;
+  }
+  .lang-select {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background-color: var(--ivory);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23053052' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    height: 40px;
+    min-width: 150px;
+    padding: 0 2.6rem 0 0.9rem;
+    cursor: pointer;
+  }
+  /* No outline or colour change when focused: the dropdown stays white. */
+  .lang-select,
+  .lang-select:focus,
+  .lang-select:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>

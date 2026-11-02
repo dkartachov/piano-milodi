@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { t, localePath } from '../i18n/strings';
+
+const s = t.en.notFound;
+---
+
+<Layout lang="en" page="home">
+  <section class="page-hero not-found">
+    <div class="wrap">
+      <p class="eyebrow">404</p>
+      <h1>{s.title}</h1>
+      <p class="lead">{s.text}</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={localePath('en', 'home')}>{s.back}</a>
+      </div>
+    </div>
+  </section>
+</Layout>

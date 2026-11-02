@@ -1,0 +1,69 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { t, localePath, languages, routes, type Lang, type PageKey } from '../i18n/strings';
+import { site } from '../config/site';
+import '../styles/global.css';
+
+interface Props {
+  lang: Lang;
+  page: PageKey;
+}
+
+const { lang, page } = Astro.props;
+const s = t[lang];
+const title = page === 'home' ? `${site.name} · ${s.brandTagline}` : `${s.nav[page]} · ${site.name}`;
+const description = s.siteDescription;
+const canonical = new URL(localePath(lang, page), site.url).toString();
+---
+
+<!doctype html>
+<html lang={s.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {languages.map((l) => (
+      <link rel="alternate" hreflang={t[l].htmlLang} href={new URL(localePath(l, page), site.url).toString()} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={new URL(routes[page].en, site.url).toString()} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_CA' : 'en_CA'} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;700&family=Noto+Serif:wght@400&display=swap"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'MusicSchool',
+      name: site.name,
+      url: site.url,
+      telephone: site.phone,
+      email: site.email,
+      description,
+      inLanguage: [lang === 'fr' ? 'fr-CA' : 'en-CA'],
+    })} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{lang === 'fr' ? 'Aller au contenu' : 'Skip to content'}</a>
+    <Header lang={lang} page={page} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

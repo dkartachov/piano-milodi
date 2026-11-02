@@ -1,0 +1,158 @@
+---
+import { t, type Lang } from '../../i18n/strings';
+
+interface Props {
+  lang: Lang;
+}
+
+const lang: Lang = Astro.props.lang;
+const s: (typeof t)[Lang]['home'] = t[lang].home;
+---
+
+<!-- Hero photo -->
+<section class="hero">
+  <div class="hero-frame">
+    <img
+      class="hero-photo"
+      src="/images/piano-hero.jpg"
+      width="2000"
+      height="1333"
+      alt={lang === 'fr' ? 'Gros plan sur les touches d’un piano' : 'Close-up of piano keys'}
+    />
+  </div>
+</section>
+
+<!-- Free trial -->
+<section class="section content">
+  <div class="column">
+    <h1>{s.trialTitle}</h1>
+
+    <article class="box">
+      <h3>{s.trialHowTitle}</h3>
+      <p>{s.trialHowText}</p>
+      <p>{s.trialLength}</p>
+    </article>
+
+    <article class="box">
+      <h3>{s.bringTitle}</h3>
+      <p>{s.bringBeginner}</p>
+      <p>{s.bringReturning}</p>
+    </article>
+
+    <article class="box">
+      <h3>{s.duringTitle}</h3>
+      <p>{s.duringText}</p>
+    </article>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section content" id="pricing">
+  <div class="column">
+    <h1>{s.pricingTitle}</h1>
+
+    {s.plans.map((plan) => (
+      <article class="box price-box">
+        <p class="price-line">{plan.duration} - {plan.price}</p>
+        <p>{plan.note}</p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<!-- Why choose -->
+<section class="section content">
+  <div class="column">
+    <h2>{s.whyTitle}</h2>
+
+    {s.reasons.map((reason) => (
+      <article class="reason">
+        <h3>{reason.title}</h3>
+        <p>{reason.text}</p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .hero {
+    margin-top: 0;
+  }
+  /* Full-width photo, shown in its entirety (no cropping or zoom) */
+  .hero {
+    width: 100%;
+  }
+  /* Frame is 90% of the window width but a fixed height. The photo covers the frame,
+     so as the window changes only the width changes and the picture is cropped top/bottom. */
+  .hero-frame {
+    width: 96vw;
+    height: 460px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .hero-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+  }
+  @media (max-width: 640px) {
+    .hero-frame {
+      height: 300px;
+    }
+  }
+
+  .content {
+    padding: clamp(2.5rem, 6vw, 4rem) 0 0;
+  }
+  /* Content column matches the original's narrower reading width */
+  .column {
+    width: min(100% - 2rem, 980px);
+    margin-inline: auto;
+  }
+  .content h1 {
+    font-size: clamp(3rem, 6.6vw, 5.4rem);
+    font-weight: 300;
+    margin-bottom: 0.4em;
+  }
+
+  .box {
+    background: var(--card);
+    padding: clamp(1.25rem, 2.6vw, 1.75rem) clamp(1.25rem, 2.6vw, 1.75rem);
+    margin-bottom: 1.25rem;
+  }
+  .box h3 {
+    margin-bottom: 0.8rem;
+    font-size: 1.2rem;
+  }
+  .box p {
+    margin-bottom: 0.9rem;
+  }
+  .box p:last-child {
+    margin-bottom: 0;
+  }
+  .box a {
+    text-decoration: underline;
+  }
+
+  .price-box .price-line {
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+
+  .reason {
+    padding: 0.9rem 0 1.25rem;
+  }
+  .reason h3 {
+    font-weight: 400;
+    font-size: clamp(1.4rem, 2.2vw, 1.7rem);
+    margin-bottom: 0.4rem;
+  }
+  .reason p {
+    margin: 0;
+  }
+  .content h2 {
+    margin-bottom: 1.25rem;
+  }
+</style>

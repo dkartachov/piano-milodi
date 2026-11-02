@@ -1,0 +1,105 @@
+---
+import { t, localePath, type Lang } from '../i18n/strings';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const s = t[lang];
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <p class="footer-brand">{site.name}</p>
+      <p class="footer-tag">{s.brandTagline}</p>
+    </div>
+    <nav aria-label={s.footer.navTitle}>
+      <p class="footer-title">{s.footer.navTitle}</p>
+      <ul>
+        <li><a href={localePath(lang, 'home')}>{s.nav.home}</a></li>
+        <li><a href={localePath(lang, 'about')}>{s.nav.about}</a></li>
+        <li><a href={localePath(lang, 'contact')}>{s.nav.contact}</a></li>
+        <li><a href={localePath(lang, 'events')}>{s.nav.events}</a></li>
+      </ul>
+    </nav>
+    <div>
+      <p class="footer-title">{s.footer.contactTitle}</p>
+      <ul>
+        <li><a href={`tel:${site.phone.replace(/[^0-9+]/g, '')}`}>{site.phone}</a></li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <p>© {year} {site.name}. {s.footer.rights}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ivory);
+    color: var(--ink);
+    margin-top: 4rem;
+    border-top: 1px solid var(--line);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 2.5rem;
+    padding: 3rem 0 2rem;
+  }
+  .footer-brand {
+    font-family: var(--serif);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .footer-tag {
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+  .footer-title {
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.75rem;
+  }
+  .site-footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .site-footer a {
+    color: var(--ink);
+    opacity: 0.9;
+  }
+  .site-footer a:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .footer-bottom {
+    border-top: 1px solid var(--line);
+    padding: 1.25rem 0 2rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .footer-bottom p {
+    margin: 0;
+  }
+  @media (max-width: 760px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

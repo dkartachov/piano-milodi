@@ -1,0 +1,205 @@
+---
+import { t, type Lang } from '../../i18n/strings';
+import { events } from '../../data/events';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const s = t[lang].events;
+const locale = lang === 'fr' ? 'fr-CA' : 'en-CA';
+
+// Build-time split: events whose date is today or later are "upcoming".
+const today = new Date().toISOString().slice(0, 10);
+const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
+const upcoming = sorted.filter((e) => e.date >= today);
+const past = sorted.filter((e) => e.date < today).reverse();
+
+function formatDate(iso: string): string {
+  // Noon avoids timezone shifts moving the date to the previous day.
+  return new Intl.DateTimeFormat(locale, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(new Date(`${iso}T12:00:00`));
+}
+
+function formatTime(hhmm: string): string {
+  const [h, m] = hhmm.split(':').map(Number);
+  if (lang === 'fr') {
+    return `${h} h ${String(m).padStart(2, '0')}`;
+  }
+  const period = h >= 12 ? 'pm' : 'am';
+  const hour12 = h % 12 === 0 ? 12 : h % 12;
+  return m === 0 ? `${hour12}:00 ${period}` : `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+}
+
+---
+
+<section class="page-hero">
+  <div class="wrap">
+    <h1>{s.title}</h1>
+  </div>
+</section>
+
+<section class="section events-section">
+  <div class="wrap">
+    {upcoming.length === 0 && <p class="empty">{s.empty}</p>}
+
+    {upcoming.length > 0 && (
+      <h2 class="group-title">{s.upcoming}</h2>
+    )}
+    <div class="event-list">
+      {upcoming.map((event) => (
+        <article class="event">
+          <div class="event-date">
+            <time datetime={event.date}>{formatDate(event.date)}</time>
+          </div>
+          <h3>{event.title[lang]}</h3>
+          <p class="event-venue">
+            <span class="label">{s.venueLabel}:</span> {event.venue[lang]}
+            <br />
+            <span class="address">{event.address}</span>
+          </p>
+          <ul class="sessions">
+            {event.sessions.map((session) => (
+              <li>
+                <span class="session-label">{session.label[lang]}</span>
+                <span class="session-time">{formatTime(session.time)}</span>
+              </li>
+            ))}
+          </ul>
+          {event.link && (
+            <a class="btn btn-primary" href={event.link.url}>{event.link[lang]}</a>
+          )}
+        </article>
+      ))}
+    </div>
+
+    {past.length > 0 && (
+      <>
+        <h2 class="group-title past-title">{s.past}</h2>
+        <div class="event-list">
+          {past.map((event) => (
+            <article class="event is-past">
+              <div class="event-date">
+                <time datetime={event.date}>{formatDate(event.date)}</time>
+              </div>
+              <h3>{event.title[lang]}</h3>
+              <p class="event-venue">{event.venue[lang]}</p>
+            </article>
+          ))}
+        </div>
+      </>
+    )}
+  </div>
+</section>
+
+<style>
+  .group-title {
+    font-size: 1.9rem;
+    margin-bottom: 1.5rem;
+  }
+  .past-title {
+    margin-top: 4rem;
+    color: var(--muted);
+  }
+  .empty {
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+  .event-list {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .event {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.6rem 2rem;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .event::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: var(--ebony);
+  }
+  .event.is-past {
+    opacity: 0.7;
+    box-shadow: none;
+  }
+  .event.is-past::before {
+    background: var(--ivory-edge);
+  }
+  .event-date {
+    grid-column: 1 / -1;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .event h3 {
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    margin: 0;
+    grid-column: 1 / -1;
+  }
+  .event-venue {
+    margin: 0;
+    color: var(--muted);
+  }
+  .event-venue .label {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .event-venue .address {
+    font-size: 0.95rem;
+  }
+  .sessions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    justify-self: end;
+    min-width: 220px;
+  }
+  .sessions li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.55rem 0.9rem;
+    background: var(--ivory);
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  .session-time {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .event .btn {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+  @media (max-width: 700px) {
+    .event {
+      grid-template-columns: 1fr;
+    }
+    .sessions {
+      justify-self: stretch;
+      min-width: 0;
+    }
+  }
+</style>

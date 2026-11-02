@@ -1,0 +1,62 @@
+---
+// Decorative strip of piano keys. Purely visual, hidden from screen readers.
+// Layout: 14 white keys per strip, with black keys placed over the gaps.
+const whiteKeys = Array.from({ length: 14 });
+// Index of the white key to the left of each black key (C#, D#, F#, G#, A# pattern within an octave).
+const blackAfter = [0, 1, 3, 4, 5, 7, 8, 10, 11, 12];
+---
+
+<div class="keys-strip" aria-hidden="true">
+  <div class="keys">
+    {whiteKeys.map(() => <span class="white-key"></span>)}
+  </div>
+  <div class="black-keys">
+    {blackAfter.map((i) => (
+      <span class="black-key" style={`left: calc(${((i + 1) / whiteKeys.length) * 100}% - 0.9%)`}></span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .keys-strip {
+    position: relative;
+    height: 84px;
+    width: 100%;
+    background: var(--ivory);
+    overflow: hidden;
+  }
+  .keys {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(14, 1fr);
+  }
+  .white-key {
+    background: linear-gradient(180deg, #fffdf8 0%, var(--ivory) 70%, var(--ivory-shade) 100%);
+    border-right: 1px solid var(--ivory-edge);
+    box-shadow: inset 0 -6px 10px rgba(0, 0, 0, 0.04);
+  }
+  .white-key:last-child {
+    border-right: none;
+  }
+  .black-keys {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 56%;
+    pointer-events: none;
+  }
+  .black-key {
+    position: absolute;
+    top: 0;
+    width: 1.8%;
+    height: 100%;
+    border-radius: 0 0 4px 4px;
+    background: linear-gradient(180deg, #2b2b2f 0%, var(--ebony) 60%, #141416 100%);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .keys-strip {
+      transition: none;
+    }
+  }
+</style>
