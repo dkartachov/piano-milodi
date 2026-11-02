@@ -8,8 +8,8 @@ export const site = {
   phone: '514-975-4338',
   email: 'pianomilodi@gmail.com',
 
-  // TODO: replace with the studio's street address (also used for the Google Map on the contact page).
-  address: 'Pointe-Claire, QC, Canada',
+  // The studio's street address (also used for the Google Map on the contact page).
+  address: '1 Rue de Jouvence, L\'Île-Perrot, QC J7V 8C7',
 
   // Web3Forms access key (free, https://web3forms.com). It is safe to expose in the browser:
   // Web3Forms only lets the key send mail to the address you registered with it.
