@@ -68,7 +68,13 @@ const s: (typeof t)[Lang]['home'] = t[lang].home;
     {s.reasons.map((reason) => (
       <article class="reason">
         <h3>{reason.title}</h3>
-        <p>{reason.text}</p>
+        {reason.link ? (
+          <p>
+            {reason.text.split(reason.link.label)[0]}<a href={reason.link.url} target="_blank" rel="noopener">{reason.link.label}</a>{reason.text.split(reason.link.label)[1]}
+          </p>
+        ) : (
+          <p>{reason.text}</p>
+        )}
       </article>
     ))}
   </div>

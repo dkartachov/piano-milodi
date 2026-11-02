@@ -9,9 +9,6 @@ interface Props {
 
 const { lang } = Astro.props;
 const s = t[lang].contact;
-// Searching the business name as well as the address makes the map show the Google listing, not just a bare address.
-const mapQuery = encodeURIComponent(`${site.name}, ${site.address}`);
-const mapSrc = `https://www.google.com/maps?q=${mapQuery}&hl=${lang}&output=embed`;
 ---
 
 <section class="page-hero">
@@ -58,9 +55,11 @@ const mapSrc = `https://www.google.com/maps?q=${mapQuery}&hl=${lang}&output=embe
       <iframe
         class="map"
         title={s.mapTitle}
-        src={mapSrc}
+        src={site.mapEmbedUrl}
+        width="600"
+        height="450"
         loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
+        referrerpolicy="strict-origin-when-cross-origin"
         allowfullscreen
       ></iframe>
     </div>
@@ -78,7 +77,7 @@ const mapSrc = `https://www.google.com/maps?q=${mapQuery}&hl=${lang}&output=embe
     align-content: start;
     gap: 2rem;
   }
-  /* Form on top; the map stretches to line up with the bottom of the left column. */
+  /* Form on top, map underneath. */
   .contact-side {
     display: flex;
     flex-direction: column;
@@ -143,13 +142,14 @@ const mapSrc = `https://www.google.com/maps?q=${mapQuery}&hl=${lang}&output=embe
     text-underline-offset: 3px;
   }
   .map {
+    /* Same 600 x 450 shape as Google's embed code, shrinking to fit narrow screens. */
     width: 100%;
-    flex: 1;
-    min-height: 240px;
+    max-width: 600px;
+    height: auto;
+    aspect-ratio: 4 / 3;
     border: 0;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    filter: grayscale(0.15) contrast(1.02);
   }
   @media (max-width: 860px) {
     .contact-grid {

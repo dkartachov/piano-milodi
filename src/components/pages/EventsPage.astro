@@ -29,7 +29,7 @@ function formatDate(iso: string): string {
 function formatTime(hhmm: string): string {
   const [h, m] = hhmm.split(':').map(Number);
   if (lang === 'fr') {
-    return `${h} h ${String(m).padStart(2, '0')}`;
+    return `${h}h${String(m).padStart(2, '0')}`;
   }
   const period = h >= 12 ? 'pm' : 'am';
   const hour12 = h % 12 === 0 ? 12 : h % 12;
