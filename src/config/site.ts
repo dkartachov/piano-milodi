@@ -17,6 +17,5 @@ export const site = {
 
   // Web3Forms access key (free, https://web3forms.com). It is safe to expose in the browser:
   // Web3Forms only lets the key send mail to the address you registered with it.
-  // TODO: paste your key here.
-  web3formsKey: 'YOUR_WEB3FORMS_ACCESS_KEY',
+  web3formsKey: 'c770fce5-5197-43bb-a557-5cb0165f69d9',
 };
